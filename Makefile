@@ -1,2 +1,2 @@
-nutshell: main.c nutstring.h
+nutsh: main.c *.h
 	gcc -g -o nutshell main.c

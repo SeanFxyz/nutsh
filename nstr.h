@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DEFAULT_CAP 128
-#define DEFAULT_EX 64
+#define NSTR_DEFAULT_CAP 128
+#define NSTR_DEFAULT_EX 64
 
 typedef struct nutsh_string {
 	int cap; // Current capacity of character array
@@ -13,30 +13,30 @@ typedef struct nutsh_string {
 	int ex; // Extra space to leave for new characters when resizing
 } nstr;
 
-nstr nstrInit(nstr *str)
+nstr nstr_init(nstr *str)
 {
-	char *newcs = malloc(sizeof(char) * DEFAULT_CAP);
-	new_nstr->cap = DEFAULT_CAP;
-	new_nstr->cs = newcs;
-	new_nstr->ex = DEFAULT_EX;
+	char *newcs = malloc(sizeof(char) * NSTR_DEFAULT_CAP);
+	str->cap = NSTR_DEFAULT_CAP;
+	str->cs = newcs;
+	str->ex = NSTR_DEFAULT_EX;
 }
 
-nstr nstrNew()
+nstr nstr_new()
 {
 	nstr new_nstr;
-	nstrInit(&new_nstr);
+	nstr_init(&new_nstr);
 	return new_nstr;
 }
 
 // Free the nstr's cs
-void nstrDel(nstr *str)
+void nstr_del(nstr *str)
 {
 	free(str->cs);
 }
 
 // set the capacity of the string, copy as much of the old string data
 // as possible into the new cs field
-void nstrSetCap(nstr *str, int newcap)
+void nstr_setcap(nstr *str, int newcap)
 {
 	char *newcs = malloc(sizeof(char) * newcap);
 	strncpy(newcs, str->cs, newcap);
@@ -46,59 +46,59 @@ void nstrSetCap(nstr *str, int newcap)
 }
 
 // grow the capacity of a string to accomodate newlen
-void nstrGrow(nstr *str, int newlen)
+void nstr_grow(nstr *str, int newlen)
 {
 	if (newlen > str->cap) {
 		newlen += str->ex;
-		nstrSetCap(str, newlen);
+		nstr_setcap(str, newlen);
 	}
 }
 
 // shrink the capacity of a string to current content
-void nstrShrink(nstr *str)
+void nstr_shrink(nstr *str)
 {
-	nstrSetCap(str, strlen(str->cs));
+	nstr_setcap(str, strlen(str->cs));
 }
 
 // return a minimum-length c-string with the nstr's contents
-char *nstrMinCs(nstr str)
+char *nstr_mincs(nstr str)
 {
-	nstrShrink(&str);
+	nstr_shrink(&str);
 	return str.cs;
 }
 
 // append a char to str
-void nstrAppendCh(nstr *str, char ch)
+void nstr_appendch(nstr *str, char ch)
 {
 	int oldlen = strlen(str->cs);
-	nstrGrow(str, oldlen + 1);
+	nstr_grow(str, oldlen + 1);
 	str->cs[oldlen] = ch;
 	str->cs[oldlen + 1] = '\0';
 }
 
 // append a c-string to str
-void nstrAppendCs(nstr *str, char* cs)
+void nstr_appendcs(nstr *str, char* cs)
 {
 	int oldlen = strlen(str->cs);
 	int newlen = oldlen + strlen(cs);
-	nstrGrow(str, newlen);
+	nstr_grow(str, newlen);
 	strcpy(str->cs + sizeof(char) * oldlen, cs);
 }
 
 // set the content of the nstr to the content of ch
-void nstrSetCs(nstr *str, char* ch)
+void nstr_setcs(nstr *str, char* ch)
 {
-	nstrGrow(str, strlen(ch));
+	nstr_grow(str, strlen(ch));
 	strcpy(str->cs, ch);
 }
 
 // get a line of stdin and store in str
-void nstrGetline(nstr *str)
+void nstr_getline(nstr *str)
 {
 	char c;
-	nstrSetCs(str, "");
+	nstr_setcs(str, "");
 	while ((c = getchar()) != EOF && c != '\n')
-		nstrAppendCh(str, c);
+		nstr_appendch(str, c);
 }
 
 #endif

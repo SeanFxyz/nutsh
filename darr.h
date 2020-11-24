@@ -2,6 +2,9 @@
 #define _darray_h
 
 #include <assert.h>
+#include "dbg.h"
+
+#define DARR_DEFAULT_EX 10
 
 typedef struct darr {
 	int len;
@@ -34,7 +37,7 @@ void darr_del(darr *arr)
 	}
 }
 
-void darr_clear(darr *arr);
+void darr_clear(darr *arr)
 {
 	for (int i=0; i < arr->len; i++) {
 		if (arr->contents[i] != NULL)
@@ -42,26 +45,28 @@ void darr_clear(darr *arr);
 	}
 }
 
-int darr_resize(darr *arr, size_t newsize)
+static inline int darr_resize(darr *arr, size_t newsize)
 {
 	check(newsize > 0, "darr_resize: new size must be > 0");
-
 	arr->cap = newsize;
+
 	if (arr->cap < arr->len)
 		arr->len = arr->cap;
 
 	void *contents = realloc(arr->contents, arr->cap * sizeof(void *));
+	check_mem(contents);
+
+	arr->contents = contents;
+
+	return 0;
 }
 
-int darr_expand(darr *arr)
+int darr_contract(darr *arr)
 {
-	arr->cap = arr->cap + ex;
-	void **newcontents = malloc(sizeof(void *) * arr->cap);
-	for(int i=0; i < arr->len; i++)
-		darr_push(arr, arr->contents[i]);
-}
+	int new_size = arr->len < (int)arr->ex ? (int)arr->ex : arr->len;
 
-int darr_contract
+	return darr_resize(arr, new_size + 1);
+}
 
 void *darr_remove(darr *arr, int i)
 {
@@ -70,10 +75,26 @@ void *darr_remove(darr *arr, int i)
 	return el;
 }
 
+inline void *darr_get(darr *arr, int i)
+{
+	check(i >= 0 && i < arr->len, "darr get out of bounds");
+	return arr->contents[i];
+}
+
+int darr_expand(darr *arr)
+{
+	size_t old_cap = arr->cap;
+	check(darr_resize(arr, arr->cap + arr->ex) == 0,
+			"Failed to expand array");
+
+	memset(arr->contents + old_cap, 0, arr->ex + 1);
+	return 0;
+}
+
 int darr_push(darr *arr, void *el)
 {
 	check(arr->el_size == sizeof(el), "darr_push: wrong el_size");
-	arr->content[len] = el;
+	arr->contents[arr->len] = el;
 	arr->len++;
 
 	if (arr->len >= arr->cap)
@@ -87,18 +108,12 @@ void *darr_pop(darr *arr)
 	check(arr->end - 1 >= 0, "darr_pop: array empty");
 
 	void *el = darr_remove(arr, arr->len - 1);
-	arr->end--;
+	arr->len--;
 
 	if (arr->len > (int)arr->ex && arr->len % arr->ex)
 		darr_contract(arr);
 
 	return el;
-}
-
-void darr_clear_del(darr *arr)
-{
-	darr_clear(arr);
-	darr_del(arr);
 }
 
 inline void darr_set(darr *arr, int i, void *el)
@@ -112,9 +127,9 @@ inline void darr_set(darr *arr, int i, void *el)
 	arr->contents[i] = el;
 }
 
-inline void *darr_get(darr *arr, int i)
+void darr_clear_del(darr *arr)
 {
-	check(i >= 0 && i < arr->len, "darr get out of bounds");
-	return arr->contents[i];
+	darr_clear(arr);
+	darr_del(arr);
 }
 #endif
