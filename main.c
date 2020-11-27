@@ -1,33 +1,26 @@
 #include <stdio.h>
-#include "nstr.h"
-#include "darr.h"
+#include "nutsh.h"
+#include "cmd.h"
 
 extern char** environ;
 
-void process(nstr cmd)
-{
-	printf("%s\n", cmd.cs);
-}
+char ps1[] = ">";
+char path[] = "/usr/bin:/bin";
 
 int main(int argc, char* argv[])
 {
-	nstr str1 = nstr_new("");
-	nstr_setcs(&str1, "Hello");
-	nstr str2 = nstr_new("");
-	nstr_setcs(&str2, "World");
+	char *line;
+	char **args;
+	int status;
+	do {
+		printf("%s", ps1);
+		line = nsh_readline();
+		args = nsh_splitline(line);
+		status = nsh_execute(args);
 
-	darr *my_arr = darr_new(sizeof(nstr), 5);
-	darr_push(my_arr, &str1);
-	darr_push(my_arr, &str2);
-
-	// TODO: get strings back from array
-
-	nstr cmd = nstr_new();
-	while (1) {
-		nstr_getline(&cmd);
-		process(cmd);
-		nstr_init(&cmd);
-	}
+		free(line);
+		free(args);
+	} while (status);
 
 	return 0;
 }
