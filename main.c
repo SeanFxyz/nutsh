@@ -1,15 +1,15 @@
 #include <stdio.h>
+#include "darr.h"
 #include "nutsh.h"
 #include "cmd.h"
-
-extern char** environ;
 
 char ps1[] = ">";
 char path[] = "/usr/bin:/bin";
 
 int main(int argc, char* argv[])
 {
-	char *line;
+
+/*	char *line;
 	char **args;
 	int status;
 	do {
@@ -23,4 +23,5 @@ int main(int argc, char* argv[])
 	} while (status);
 
 	return 0;
+*/
 }
