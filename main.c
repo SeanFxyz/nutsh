@@ -9,7 +9,7 @@ char path[] = "/usr/bin:/bin";
 int main(int argc, char* argv[])
 {
 
-/*	char *line;
+	char *line;
 	char **args;
 	int status;
 	do {
@@ -23,5 +23,4 @@ int main(int argc, char* argv[])
 	} while (status);
 
 	return 0;
-*/
 }

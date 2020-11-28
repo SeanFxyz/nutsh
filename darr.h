@@ -20,19 +20,6 @@ static inline darr *darr_new(darr *arr)
 	check(arr->el_size > 0, "Can't use darr_new on 0 size darr");
 	return calloc(1, arr->el_size);
 }
-/*static inline darr *darr_new(size_t el_size, size_t init_cap)
-{
-	check(el_size > 0, "Can't create new darr with el_size 0");
-
-	darr *arr = malloc(sizeof(darr));
-	arr->len = 0;
-	arr->cap = init_cap;
-	arr->el_size = el_size;
-	arr->ex = DARR_DEFAULT_EX;
-	arr->contents = malloc(sizeof(void *) * init_cap);
-
-	return arr;
-}*/
 
 static inline void darr_set(darr *arr, int i, void *el)
 {
@@ -65,7 +52,7 @@ darr *darr_create(size_t el_size, size_t init_cap)
 	arr->contents = calloc(init_cap, sizeof(void *));
 	check_mem(arr->contents);
 
-	arr->end = 0;
+	arr->len = 0;
 	arr->el_size = el_size;
 	arr->ex = DARR_DEFAULT_EX;
 
@@ -125,6 +112,12 @@ void darr_del(darr *arr)
 	}
 }
 
+void darr_clear_del(darr *arr)
+{
+	darr_clear(arr);
+	darr_del(arr);
+}
+
 int darr_push(darr *arr, void *el)
 {
 	check(arr->el_size == sizeof(el), "darr_push: wrong el_size");
@@ -139,7 +132,7 @@ int darr_push(darr *arr, void *el)
 
 void *darr_pop(darr *arr)
 {
-	check(arr->end - 1 >= 0, "darr_pop: array empty");
+	check(arr->len - 1 >= 0, "darr_pop: array empty");
 
 	void *el = darr_remove(arr, arr->len - 1);
 	arr->len--;
@@ -148,11 +141,5 @@ void *darr_pop(darr *arr)
 		darr_contract(arr);
 
 	return el;
-}
-
-void darr_clear_del(darr *arr)
-{
-	darr_clear(arr);
-	darr_del(arr);
 }
 #endif
