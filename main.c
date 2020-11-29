@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "darr.h"
+#include "hashmap.h"
 #include "nutsh.h"
 #include "cmd.h"
 
@@ -8,7 +9,6 @@ char path[] = "/usr/bin:/bin";
 
 int main(int argc, char* argv[])
 {
-
 	char *line;
 	char **args;
 	int status;

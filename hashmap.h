@@ -1,6 +1,7 @@
-#ifndef HASHMAP_H
-#define HASHMAP_H
+#ifndef _HASHMAP_H
+#define _HASHMAP_H
 
+#include <stdint.h>
 #include "darr.h"
 
 #define DEFAULT_BUCKETS 100
