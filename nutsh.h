@@ -51,6 +51,11 @@ char **nsh_splitline(char *line)
 	char **tokens = malloc(bufsize * sizeof(char*));
 	char *token;
 
+	int i;
+	int tok_end;
+	char *next_tok;
+	int new_len;
+
 	if (!tokens) {
 		fprintf(stderr, "nsh: allocation error\n");
 		exit(1);
@@ -58,6 +63,18 @@ char **nsh_splitline(char *line)
 
 	token = strtok(line, NSH_TOK_DELIM);
 	while (token != NULL) {
+
+		tok_end = strlen(token) - 1;
+		while (token[tok_end] == '\\') {
+			// append next token
+			next_tok = strtok(NULL, NSH_TOK_DELIM);
+			new_len = tok_end + strlen(next_tok);
+			char *new_tok = malloc(new_len);
+			check_mem(new_tok);
+			strcpy(token + tok_end, next_tok);
+			tok_end = new_len;
+		}
+
 		tokens[pos] = token;
 		pos++;
 

@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	environ_init();
 	// config();
 
-	char *ps1 = var_get("PS1");
+	char *ps1 = "> ";
 
 	char *line;
 	char **args;
@@ -24,7 +24,8 @@ int main(int argc, char* argv[])
 
 		free(line);
 		free(args);
-		status = feof(stdin);
+		if (feof(stdin))
+			break;
 	} while (status);
 
 	return 0;
