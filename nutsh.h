@@ -66,7 +66,7 @@ char **nsh_splitline(char *line)
 
 		tok_end = strlen(token) - 1;
 		while (token[tok_end] == '\\') {
-			// append next token
+			// TODO: append next token
 			next_tok = strtok(NULL, NSH_TOK_DELIM);
 			new_len = tok_end + strlen(next_tok);
 			char *new_tok = malloc(new_len);
