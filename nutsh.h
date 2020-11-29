@@ -7,6 +7,8 @@
 #include <wait.h>
 #include <unistd.h>
 
+#include "environ.h"
+
 #define NSH_READLINE_BUFSIZE 1024
 
 #define NSH_TOK_BUFSIZE 64

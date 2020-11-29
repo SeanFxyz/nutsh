@@ -3,16 +3,20 @@
 #include "hashmap.h"
 #include "nutsh.h"
 #include "cmd.h"
-
-char ps1[] = ">";
-char path[] = "/usr/bin:/bin";
+#include "environ.h"
 
 int main(int argc, char* argv[])
 {
+	environ_init();
+	// config();
+
+	char *ps1 = var_get("PS1");
+
 	char *line;
 	char **args;
 	int status;
-	do {
+	do
+	{
 		printf("%s", ps1);
 		line = nsh_readline();
 		args = nsh_splitline(line);
@@ -20,6 +24,7 @@ int main(int argc, char* argv[])
 
 		free(line);
 		free(args);
+		status = feof(stdin);
 	} while (status);
 
 	return 0;
