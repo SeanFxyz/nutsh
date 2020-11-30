@@ -24,8 +24,10 @@ int main(int argc, char* argv[])
 
 		free(line);
 		free(args);
-		if (feof(stdin))
+		if (feof(stdin)) {
+			printf("\n");
 			break;
+		}
 	} while (status);
 
 	return 0;
