@@ -44,53 +44,23 @@ char *nsh_readline()
 	return buffer;
 }
 
+// TODO: implement escape sequences
 char **nsh_splitline(char *line)
 {
+	int i;
 	int bufsize = NSH_TOK_BUFSIZE;
 	int pos = 0;
 	char **tokens = malloc(bufsize * sizeof(char*));
 	char *token;
-
-	int i;
-
-	int tok_end;
-	char *next_tok;
-
-	int new_len;
-	char *new_tok;
+	int tok_len;
 
 	if (!tokens) {
 		fprintf(stderr, "nsh: allocation error\n");
 		exit(1);
 	}
 
-	// TODO: plug the memory leak
 	token = strtok(line, NSH_TOK_DELIM);
 	while (token != NULL) {
-
-		tok_end = strlen(token) - 1;
-		while (token[tok_end] == '\\') {
-			// get the next token
-			next_tok = strtok(NULL, NSH_TOK_DELIM);
-
-			// get combined length of token and next_tok
-			new_len = tok_end + strlen(next_tok);
-
-			// allocate a new array that can hold both
-			// token and next_tok
-			new_tok = malloc(new_len);
-			check_mem(new_tok);
-
-			// copy token, then a space, then next_tok
-			// into new_tok
-			strcpy(new_tok, token);
-			new_tok[tok_end] = ' ';
-			strcpy(new_tok + tok_end + 1, next_tok);
-
-			// set token to new_tok
-			tok_end = new_len;
-			token = new_tok;
-		}
 
 		tokens[pos] = token;
 		pos++;
@@ -108,6 +78,7 @@ char **nsh_splitline(char *line)
 	}
 
 	tokens[pos] = NULL;
+
 	return tokens;
 }
 
