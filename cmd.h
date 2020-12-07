@@ -5,13 +5,15 @@
 #include "nutsh.h"
 
 char nsh_cd(char **args);
+char nsh_pwd(char **args);
 char nsh_help(char **args);
 char nsh_exit(char **args);
 
 // List of builtin commands
-#define NSH_NUM_BUILTINS 3
+#define NSH_NUM_BUILTINS 4
 char *builtin_str[] = {
 	"cd",
+	"pwd",
 	"help",
 	"exit"
 };
@@ -19,6 +21,7 @@ char *builtin_str[] = {
 // Function pointers corresponding to command names in builtin_str
 char (*builtin_func[]) (char **) = {
 	&nsh_cd,
+	&nsh_pwd,
 	&nsh_help,
 	&nsh_exit
 };
@@ -34,6 +37,13 @@ char nsh_cd(char **args)
 		}
 	}
 	return 1;
+}
+
+char nsh_pwd(char **args)
+{
+	char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
+	printf("\n%s\n", cwd);
 }
 
 char nsh_help(char **args)
@@ -59,7 +69,8 @@ int nsh_execute(char **args)
 		return 1;
 	}
 
-	for (int i=0; i < NSH_NUM_BUILTINS; i++) {
+	int i;
+	for (i=0; i < NSH_NUM_BUILTINS; i++) {
 		if (strcmp(args[0], builtin_str[i]) == 0) {
 			return (*builtin_func[i])(args);
 		}
@@ -67,6 +78,5 @@ int nsh_execute(char **args)
 
 	return nsh_launch(args);
 }
-
 
 #endif

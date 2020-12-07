@@ -7,46 +7,49 @@
 
 #define DARR_DEFAULT_EX 30
 
+/*
+ * Dynamic array mostly based on the example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 typedef struct darr {
 	int len;
 	int cap; // Current capacity of character array
 	size_t el_size;
 	int ex; // Extra space to leave for new characters when resizing
-	void **contents;
+	void **data;
 } darr;
 
 darr *darr_create(size_t el_size, size_t init_cap);
 void darr_del(darr *arr);
 int darr_expand(darr *arr);
 int darr_contract(darr *arr);
+int darr_contract_full(darr *arr);
 int darr_push(darr *arr, void *el);
 void *darr_pop(darr *arr);
-void darr_clear_destroy(darr *arr);
+void darr_clear_del(darr *arr);
 
 static inline darr *darr_new(darr *arr)
 {
-	check(arr->el_size > 0, "Can't use darr_new on 0 size darr");
 	return calloc(1, arr->el_size);
 }
 
 static inline void darr_set(darr *arr, int i, void *el)
 {
-	check(i >= 0, "darr set out of bounds");
 	if (i >= arr->len)
 		arr->len = i + 1;
-	arr->contents[i] = el;
+	arr->data[i] = el;
 }
 
 static inline void *darr_get(darr *arr, int i)
 {
-	check(i >= 0 && i < arr->len, "darr get out of bounds");
-	return arr->contents[i];
+	return arr->data[i];
 }
 
 static inline void *darr_remove(darr *arr, int i)
 {
-	void *el = arr->contents[i];
-	arr->contents[i] = NULL;
+	void *el = arr->data[i];
+	arr->data[i] = NULL;
 	return el;
 }
 

@@ -44,10 +44,52 @@ char *nsh_readline()
 	return buffer;
 }
 
+char **nsh_tokenize(char *line)
+{
+	darr *tokens = darr_create(sizeof(char*), 64);
+	char **tokens_p;
+	int i;
+	size_t tok_len;
+	char *token;
+	char *tok_copy;
+
+	token = strtok(line, NSH_TOK_DELIM);
+	while (token != NULL) {
+		tok_len = strlen(token);
+
+		tok_copy = malloc(tok_len);
+		check_mem(tok_copy);
+		strcpy(tok_copy, token);
+
+		while (tok_copy[tok_len - 1] == '\\') {
+			tok_copy[tok_len - 1] = ' ';
+			token = strtok(NULL, NSH_TOK_DELIM);
+			tok_len += strlen(token) - 1;
+
+			tok_copy = realloc(tok_copy, tok_len);
+			check_mem(tok_copy);
+			strcat(tok_copy, token);
+		}
+
+		darr_push(tokens, tok_copy);
+
+		token = strtok(NULL, NSH_TOK_DELIM);
+	}
+
+	// push terminating null pointer and shrink darr to data size
+	darr_push(tokens, NULL);
+	darr_contract_full(tokens);
+
+	tokens_p = (char**)tokens->data;
+	free(tokens);
+
+	return tokens_p;
+}
+
+/*
 // TODO: implement escape sequences
 char **nsh_splitline(char *line)
 {
-	int i;
 	int bufsize = NSH_TOK_BUFSIZE;
 	int pos = 0;
 	char **tokens = malloc(bufsize * sizeof(char*));
@@ -81,6 +123,7 @@ char **nsh_splitline(char *line)
 
 	return tokens;
 }
+*/
 
 int nsh_launch(char **args)
 {

@@ -7,8 +7,8 @@ darr *darr_create(size_t el_size, size_t init_cap)
 	arr->cap = init_cap;
 	check(arr->cap > 0, "Initial cap must be > 0");
 
-	arr->contents = calloc(init_cap, sizeof(void *));
-	check_mem(arr->contents);
+	arr->data = calloc(init_cap, sizeof(void *));
+	check_mem(arr->data);
 
 	arr->len = 0;
 	arr->el_size = el_size;
@@ -21,25 +21,24 @@ void darr_clear(darr *arr)
 {
 	int i;
 	for (i=0; i < arr->len; i++) {
-		if (arr->contents[i] != NULL) {
-			free(arr->contents[i]);
-			// arr->contents[i] = NULL;
+		if (arr->data[i] != NULL) {
+			free(arr->data[i]);
+			// arr->data[i] = NULL;
 		}
 	}
 }
 
 static inline int darr_resize(darr *arr, size_t newsize)
 {
-	check(newsize > 0, "darr_resize: new size must be > 0");
 	arr->cap = newsize;
 
 	if (arr->cap < arr->len)
 		arr->len = arr->cap;
 
-	void *contents = realloc(arr->contents, arr->cap * sizeof(void *));
-	check_mem(contents);
+	void *data = realloc(arr->data, arr->cap * sizeof(void *));
+	check_mem(data);
 
-	arr->contents = contents;
+	arr->data = data;
 
 	return 0;
 }
@@ -50,7 +49,7 @@ int darr_expand(darr *arr)
 	check(darr_resize(arr, arr->cap + arr->ex) == 0,
 			"Failed to expand array");
 
-	memset(arr->contents + old_cap, 0, arr->ex + 1);
+	memset(arr->data + old_cap, 0, arr->ex + 1);
 	return 0;
 }
 
@@ -61,11 +60,16 @@ int darr_contract(darr *arr)
 	return darr_resize(arr, new_size + 1);
 }
 
+int darr_contract_full(darr *arr)
+{
+	return darr_resize(arr, arr->len);
+}
+
 void darr_del(darr *arr)
 {
 	if (arr) {
-		if (arr->contents)
-			free(arr->contents);
+		if (arr->data)
+			free(arr->data);
 		free(arr);
 	}
 }
@@ -79,7 +83,7 @@ void darr_clear_del(darr *arr)
 int darr_push(darr *arr, void *el)
 {
 	check(arr->el_size == sizeof(el), "darr_push: wrong el_size");
-	arr->contents[arr->len] = el;
+	arr->data[arr->len] = el;
 	arr->len++;
 
 	if (arr->len >= arr->cap)

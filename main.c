@@ -8,22 +8,25 @@
 int main(int argc, char* argv[])
 {
 	environ_init();
-	// config();
 
 	char *ps1 = "> ";
 
 	char *line;
 	char **args;
 	int status;
+	int i;
 	do
 	{
 		printf("%s", ps1);
 		line = nsh_readline();
-		args = nsh_splitline(line);
+		args = nsh_tokenize(line);
 		status = nsh_execute(args);
 
 		free(line);
-		free(args);
+		for (i = 0; args[i] != NULL; i++)
+			free(args[i]);
+		free(args[i]);
+
 		if (feof(stdin)) {
 			printf("\n");
 			break;

@@ -6,6 +6,11 @@
 
 #define DEFAULT_BUCKETS 100
 
+/*
+ * Hashmap based on the example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 typedef int (*Hashmap_compare) (void *a, void *b);
 typedef uint32_t (*Hashmap_hash) (void *key);
 
