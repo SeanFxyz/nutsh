@@ -1,2 +1,2 @@
-# Nutshell
+# nutsh
 An elementary Unix shell.
