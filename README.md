@@ -1,4 +1,4 @@
-# nutsh
+# 🥜 nutsh 🥜
 An elementary Unix shell.
 
 ## Compiling
