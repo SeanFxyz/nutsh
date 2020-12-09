@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include "darr.h"
 #include "hashmap.h"
 #include "nutsh.h"
@@ -9,7 +10,11 @@ int main(int argc, char* argv[])
 {
 	environ_init();
 
-	char *ps1 = "> ";
+	char *ps1;
+	if (getuid() == 0)
+		ps1 = "🥜# ";
+	else
+		ps1 = "🥜$ ";
 
 	char *line;
 	char **args;
