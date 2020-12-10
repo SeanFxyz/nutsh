@@ -2,7 +2,7 @@
 An elementary Unix shell.
 
 ## Compiling
-just run make
+After acquiring the source code, enter the source code directory and simply run the `make` command.
 
 ## Installing
-copy it somewhere in your path
+Run `make install` with root privileges to copy the `nutsh` binary to /usr/bin/
