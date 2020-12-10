@@ -6,8 +6,10 @@
 #include <string.h>
 #include <wait.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "environ.h"
+#include "cmd.h"
 
 #define NSH_READLINE_BUFSIZE 1024
 
@@ -64,7 +66,7 @@ char **nsh_tokenize(char *line)
 		while (tok_copy[tok_len - 1] == '\\') {
 			tok_copy[tok_len - 1] = ' ';
 			token = strtok(NULL, NSH_TOK_DELIM);
-			tok_len += strlen(token) - 1;
+			tok_len += strlen(token);
 
 			tok_copy = realloc(tok_copy, tok_len);
 			check_mem(tok_copy);
@@ -86,50 +88,109 @@ char **nsh_tokenize(char *line)
 	return tokens_p;
 }
 
-/*
-// TODO: implement escape sequences
-char **nsh_splitline(char *line)
+static char **nsh_pipesplit_i = NULL;
+char **nsh_pipesplit(char **tokens)
 {
-	int bufsize = NSH_TOK_BUFSIZE;
-	int pos = 0;
-	char **tokens = malloc(bufsize * sizeof(char*));
-	char *token;
-	int tok_len;
+	int i;
+	char **tok;
 
-	if (!tokens) {
-		fprintf(stderr, "nsh: allocation error\n");
-		exit(1);
+	if (tokens != NULL) {
+		nsh_pipesplit_i = NULL;
+		tok = tokens;
+	} else if (nsh_pipesplit_i != NULL) {
+		tok = nsh_pipesplit_i;
+	} else {
+		return NULL;
 	}
 
-	token = strtok(line, NSH_TOK_DELIM);
-	while (token != NULL) {
+	i = 0;
+	for (i = 0;	tok[i] != NULL && strcmp(tok[i], "|") != 0;	i++);
+	if (tok[i]) {
+		free(tok[i]);
+		tok[i] = NULL;
+		nsh_pipesplit_i = &tok[i+1];
+	} else {
+		nsh_pipesplit_i = NULL;
+	}
 
-		tokens[pos] = token;
-		pos++;
+	return tok;
+}
 
-		if (pos >= bufsize) {
-			bufsize += NSH_TOK_BUFSIZE;
-			tokens = realloc(tokens, bufsize * sizeof(char*));
-			if (!tokens) {
-				fprintf(stderr, "nsh: allocation error\n");
-				exit(1);
-			}
+int nsh_runcmd(char **args, int infd)
+{
+	int status;
+	pid_t pid;
+	pid_t wpid;
+	int pipefd[2];
+	int outfd = STDOUT_FILENO;
+	char **next_args = nsh_pipesplit(NULL);
+	char (*builtin_func)(char **);
+
+	if (next_args) {
+		// we will pipe into the next command
+		if (pipe(pipefd) < 0) {
+			perror("nsh");
+			exit(errno);
+		}
+		outfd = pipefd[1];
+	}
+
+	builtin_func = nsh_get_builtin(args);
+	if (builtin_func) {
+		return (*builtin_func)(args);
+	}
+
+	pid = fork();
+	if (pid < 0) {
+		perror("nsh");
+		exit(errno);
+	}
+
+	if (pid == 0) {
+		// child process
+		// read from infd
+		dup2(infd, STDIN_FILENO);
+
+		// if we made another pipe
+		if (outfd != 1) {
+			// close read end
+			close(pipefd[0]);
+			// set up to write to new pipe
+			dup2(pipefd[1], STDOUT_FILENO);
 		}
 
-		token = strtok(NULL, NSH_TOK_DELIM);
+		if (execvp(args[0], args) < 0) {
+			perror("nsh");
+			exit(errno);
+		}
+
+	} else {
+		// parent process
+		if (next_args != NULL && outfd != STDOUT_FILENO) {
+			// close write end of pipe
+			close(pipefd[1]);
+			// pipe to next command in pipeline
+			return nsh_runcmd(next_args, pipefd[0]);
+		}
+
+		do {
+			wpid = waitpid(pid, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+		return 1;
 	}
-
-	tokens[pos] = NULL;
-
-	return tokens;
 }
-*/
+
+int nsh_runline(char **args)
+{
+	args = nsh_pipesplit(args);
+	return nsh_runcmd(args, 0);
+}
 
 int nsh_launch(char **args)
 {
 	pid_t pid;
 	pid_t wpid;
-
 	int status;
 
 	pid = fork();
@@ -150,6 +211,23 @@ int nsh_launch(char **args)
 	}
 
 	return 1;
+}
+
+// command execution
+int nsh_execute(char **args)
+{
+	if (args[0] == NULL) {
+		return 1;
+	}
+
+	int i;
+	for (i=0; i < NSH_NUM_BUILTINS; i++) {
+		if (strcmp(args[0], builtin_str[i]) == 0) {
+			return (*builtin_func[i])(args);
+		}
+	}
+
+	return nsh_launch(args);
 }
 
 #endif

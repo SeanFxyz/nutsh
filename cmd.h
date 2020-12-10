@@ -1,8 +1,7 @@
 #ifndef NSH_BUILTIN_H
-#define NSH_BUILDIN_H
+#define NSH_BUILTIN_H
 
 #include <stdio.h>
-#include "nutsh.h"
 
 char nsh_cd(char **args);
 char nsh_pwd(char **args);
@@ -30,7 +29,7 @@ char (*builtin_func[]) (char **) = {
 char nsh_cd(char **args)
 {
 	if (args[1] == NULL) {
-		fprintf(stderr, "nsh: expected argument to \"cd\"\n");
+		printf("nsh: expected argument to \"cd\"\n");
 	} else {
 		if (chdir(args[1]) != 0) {
 			perror("nsh");
@@ -43,7 +42,8 @@ char nsh_pwd(char **args)
 {
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
-	printf("\n%s\n", cwd);
+	printf("%s\n", cwd);
+	return 1;
 }
 
 char nsh_help(char **args)
@@ -62,21 +62,15 @@ char nsh_exit(char **args)
 	return 0;
 }
 
-// command execution
-int nsh_execute(char **args)
+char (*nsh_get_builtin(char **args))(char **)
 {
-	if (args[0] == NULL) {
-		return 1;
-	}
-
 	int i;
-	for (i=0; i < NSH_NUM_BUILTINS; i++) {
+	for (i = 0; i < NSH_NUM_BUILTINS; i++) {
 		if (strcmp(args[0], builtin_str[i]) == 0) {
-			return (*builtin_func[i])(args);
+			return builtin_func[i];
 		}
 	}
-
-	return nsh_launch(args);
+	return NULL;
 }
 
 #endif
