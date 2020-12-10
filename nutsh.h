@@ -181,53 +181,10 @@ int nsh_runcmd(char **args, int infd)
 	}
 }
 
-int nsh_runline(char **args)
+int nsh_execute(char **args)
 {
 	args = nsh_pipesplit(args);
 	return nsh_runcmd(args, 0);
-}
-
-int nsh_launch(char **args)
-{
-	pid_t pid;
-	pid_t wpid;
-	int status;
-
-	pid = fork();
-	if (pid == 0) {
-		// child process
-		if (execvp(args[0], args) == -1)
-			perror("nsh");
-		exit(1);
-	} else if (pid < 0) {
-		// fork failed
-		perror("nsh");
-	} else {
-		// parent process
-		do {
-			// wait for child process to complete
-			wpid = waitpid(pid, &status, WUNTRACED);
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-	}
-
-	return 1;
-}
-
-// command execution
-int nsh_execute(char **args)
-{
-	if (args[0] == NULL) {
-		return 1;
-	}
-
-	int i;
-	for (i=0; i < NSH_NUM_BUILTINS; i++) {
-		if (strcmp(args[0], builtin_str[i]) == 0) {
-			return (*builtin_func[i])(args);
-		}
-	}
-
-	return nsh_launch(args);
 }
 
 #endif

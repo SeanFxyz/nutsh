@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		printf("%s", ps1);
 		line = nsh_readline();
 		args = nsh_tokenize(line);
-		status = nsh_runline(args);
+		status = nsh_execute(args);
 
 		free(line);
 		for (i = 0; args[i] != NULL; i++)
