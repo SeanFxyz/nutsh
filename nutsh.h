@@ -184,6 +184,8 @@ int nsh_runcmd(char **args, int infd)
 int nsh_execute(char **args)
 {
 	args = nsh_pipesplit(args);
+	if (args == NULL);
+	return 1;
 	return nsh_runcmd(args, 0);
 }
 
