@@ -1,3 +1,8 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ */
+
 #ifndef _nutsh_string_h
 #define _nutsh_string_h
 

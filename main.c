@@ -1,3 +1,8 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include "darr.h"

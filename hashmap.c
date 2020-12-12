@@ -1,3 +1,11 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ *
+ * Based on example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 #include <stdint.h>
 #include "hashmap.h"
 #include "darr.h"

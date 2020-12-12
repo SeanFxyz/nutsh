@@ -1,3 +1,8 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ */
+
 #ifndef NSH_H
 #define NSH_H
 

@@ -1,3 +1,11 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ *
+ * Based on example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 #include "darr.h"
 
 darr *darr_create(size_t el_size, size_t init_cap)

@@ -1,6 +1,9 @@
 # 🥜 nutsh 🥜
 An elementary Unix shell.
 
+Written by Sean M Fitzgerald
+sean_m_fitzgerald@tutanota.com
+
 ## Compiling
 After acquiring the source code, enter the source code directory and simply run the `make` command.
 

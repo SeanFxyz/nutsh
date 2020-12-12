@@ -1,3 +1,11 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ *
+ * Based on example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 #ifndef _DARR_H
 #define _DARR_H
 
@@ -6,11 +14,6 @@
 #include "dbg.h"
 
 #define DARR_DEFAULT_EX 30
-
-/*
- * Dynamic array mostly based on the example implementation from
- * Learn C the Hard Way by Zed Shaw
- */
 
 typedef struct darr {
 	int len;

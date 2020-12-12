@@ -1,3 +1,11 @@
+/*
+ * Written by Sean M Fitzgerald
+ * sean_m_fitzgerald@tutanota.com
+ *
+ * Based on example implementation from
+ * Learn C the Hard Way by Zed Shaw
+ */
+
 #ifndef _HASHMAP_H
 #define _HASHMAP_H
 
@@ -5,11 +13,6 @@
 #include "darr.h"
 
 #define DEFAULT_BUCKETS 100
-
-/*
- * Hashmap based on the example implementation from
- * Learn C the Hard Way by Zed Shaw
- */
 
 typedef int (*Hashmap_compare) (void *a, void *b);
 typedef uint32_t (*Hashmap_hash) (void *key);
