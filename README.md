@@ -1,5 +1,6 @@
 # 🥜 nutsh 🥜
 An elementary Unix shell.
+https://github.com/SeanFxyz/nutsh
 
 Written by Sean M Fitzgerald
 sean_m_fitzgerald@tutanota.com
