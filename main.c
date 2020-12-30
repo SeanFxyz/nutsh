@@ -4,6 +4,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "darr.h"
 #include "hashmap.h"
@@ -13,13 +14,14 @@
 
 int main(int argc, char* argv[])
 {
-	environ_init();
+	config();
 
 	char *ps1;
 	if (getuid() == 0)
 		ps1 = "🥜# ";
 	else
 		ps1 = "🥜$ ";
+	setenv("PS1", ps1, 1);
 
 	char *line;
 	char **args;
@@ -27,7 +29,7 @@ int main(int argc, char* argv[])
 	int i;
 	do
 	{
-		printf("%s", ps1);
+		printf("%s", getenv("PS1"));
 		line = nsh_readline();
 		args = nsh_tokenize(line);
 		status = nsh_execute(args);
