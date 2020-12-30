@@ -169,6 +169,8 @@ int nsh_runcmd(char **args, int infd)
 			exit(errno);
 		}
 
+		exit(0);
+
 	} else {
 		// parent process
 		if (next_args != NULL && outfd != STDOUT_FILENO) {
@@ -188,6 +190,8 @@ int nsh_runcmd(char **args, int infd)
 
 int nsh_execute(char **args)
 {
+	if (args[0] == NULL)
+		return 1;
 	args = nsh_pipesplit(args);
 	return nsh_runcmd(args, 0);
 }
