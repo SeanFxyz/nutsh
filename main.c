@@ -14,19 +14,18 @@
 
 int main(int argc, char* argv[])
 {
-	config();
-
-	char *ps1;
-	if (getuid() == 0)
-		ps1 = "🥜# ";
-	else
-		ps1 = "🥜$ ";
-	setenv("PS1", ps1, 1);
-
 	char *line;
 	char **args;
 	int status;
 	int i;
+
+	config();
+
+	if (getuid() == 0)
+		setenv("PS1", "🥜# ", 1);
+	else
+		setenv("PS1", "🥜$ ", 1);
+
 	do
 	{
 		printf("%s", getenv("PS1"));

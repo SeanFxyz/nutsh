@@ -21,6 +21,9 @@
 #define NSH_TOK_BUFSIZE 64
 #define NSH_TOK_DELIM " \t\r\n\a"
 
+static char *NSH_SYM_TOK[] = {">", "<", "||", "&&", "|", "&"};
+#define NSH_SYM_TOK_N 6
+
 char *nsh_readline()
 {
 	int bufsize = NSH_READLINE_BUFSIZE;
@@ -51,14 +54,51 @@ char *nsh_readline()
 	return buffer;
 }
 
+char ch_in_arr(char ch, char *arr, char n)
+{
+	for (int i = 0; i < n; i++)
+		if (arr[i] == ch)
+			return 1;
+	return 0;
+}
+
+void nsh_toksplit(char *token, darr *tokens)
+{
+	char *subtok_copy;
+	char *split = NULL;
+	size_t subtok_len;
+	size_t sym_len;
+	int i;
+
+	for (i = 0; i < NSH_SYM_TOK_N; i++) {
+		sym_len = strlen(NSH_SYM_TOK[i]);
+		split = strstr(token, NSH_SYM_TOK[i]);
+		if (split) {
+			subtok_len = split - token;
+			subtok_copy = malloc(subtok_len);
+			strncpy(subtok_copy, token, subtok_len);
+			darr_push(tokens, subtok_copy);
+
+			subtok_copy = malloc(sym_len);
+			strncpy(subtok_copy, NSH_SYM_TOK[i], subtok_len);
+			darr_push(tokens, subtok_copy);
+
+			return nsh_toksplit(split + sym_len, tokens);
+		}
+	}
+	subtok_copy = malloc(strlen(token));
+	strcpy(subtok_copy, token);
+	darr_push(tokens, subtok_copy);
+}
+
 char **nsh_tokenize(char *line)
 {
 	darr *tokens = darr_create(sizeof(char*), 64);
 	char **tokens_p;
-	int i;
-	size_t tok_len;
 	char *token;
 	char *tok_copy;
+	size_t tok_len;
+	int i;
 
 	token = strtok(line, NSH_TOK_DELIM);
 	while (token != NULL) {
@@ -68,6 +108,7 @@ char **nsh_tokenize(char *line)
 		check_mem(tok_copy);
 		strcpy(tok_copy, token);
 
+		// while space-delimited token ends in backslash, merge tokens
 		while (tok_copy[tok_len - 1] == '\\') {
 			tok_copy[tok_len - 1] = ' ';
 			token = strtok(NULL, NSH_TOK_DELIM);
@@ -78,7 +119,9 @@ char **nsh_tokenize(char *line)
 			strcat(tok_copy, token);
 		}
 
-		darr_push(tokens, tok_copy);
+		// break up space-delimited token based on symbol token characters
+		// push split-up tokens to darr
+		nsh_toksplit(tok_copy, tokens);
 
 		token = strtok(NULL, NSH_TOK_DELIM);
 	}
@@ -89,6 +132,12 @@ char **nsh_tokenize(char *line)
 
 	tokens_p = (char**)tokens->data;
 	free(tokens);
+
+	i = 0;
+	while (tokens_p[i] != NULL) {
+		printf("%s\n", tokens_p[i]);
+		i++;
+	}
 
 	return tokens_p;
 }
