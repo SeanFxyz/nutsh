@@ -1,5 +1,5 @@
 # 🥜 nutsh 🥜
-An elementary Unix shell
+An elementary Unix shell, for educational purposes.
 
 https://github.com/SeanFxyz/nutsh
 
