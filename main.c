@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "darr.h"
-#include "hashmap.h"
 #include "nutsh.h"
 #include "cmd.h"
 #include "environ.h"
