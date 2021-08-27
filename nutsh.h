@@ -13,7 +13,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "environ.h"
 #include "cmd.h"
 
 #define NSH_READLINE_BUFSIZE 1024

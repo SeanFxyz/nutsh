@@ -9,12 +9,9 @@
 #include "darr.h"
 #include "nutsh.h"
 #include "cmd.h"
-#include "environ.h"
 
 int main(int argc, char* argv[])
 {
-	config();
-
 	char *ps1;
 	if (getuid() == 0)
 		ps1 = "🥜# ";
