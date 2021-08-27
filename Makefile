@@ -1,4 +1,7 @@
 nutsh: *.c *.h
+	gcc *.c -o nutsh -std=c99
+
+debug: *.c *.h
 	gcc *.c -o nutsh -std=c99 -g
 
 install: nutsh
