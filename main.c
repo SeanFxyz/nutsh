@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     do {
         printf("%s", getenv("PS1")); // Put a prompt at the start of the line
         line = nsh_readline();       // Read a line of input
-        toks = nsh_tokenize(toks);   // Break the line of input into tokens
+        toks = nsh_tokenize(line);   // Break the line of input into tokens
         status = nsh_execute(toks);  // Execute command
 
         // Memory cleanup

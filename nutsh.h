@@ -91,6 +91,14 @@ char **nsh_tokenize(char *line)
 	return tokens_p;
 }
 
+// nsh_pipesplit works sort of like strtok. It will return a pointer within
+// the same array of strings, indicating the start of the next sequence, as
+// well as setting the pipe token (a char*) at the end of the sequence to
+// NULL, which is used as a sentinel by nsh_runcmd
+
+// pointer to the next sequence in the most recently split token list
+// This is what nsh_pipesplit will return if it is passed NULL for its argument
+// If it is passwd a non-NULL pointer
 static char **nsh_pipesplit_i = NULL;
 char **nsh_pipesplit(char **tokens)
 {
@@ -188,9 +196,19 @@ int nsh_runcmd(char **args, int infd)
 
 int nsh_execute(char **args)
 {
+    // Check that we have arguments to process.
 	if (args[0] == NULL)
 		return 1;
+
+    // Get a pointer to the next pipe-separated sequence of tokens in args.
+    // nsh_pipesplit works sort of like strtok. It will return a pointer within
+    // the same array of strings, indicating the start of the next sequence, as
+    // well as setting the pipe token (a char*) at the end of the sequence to
+    // NULL, which is used as a sentinel by nsh_runcmd
 	args = nsh_pipesplit(args);
+
+    // Call recursive nsh_runcmd function to execute this first
+    // sequence as well as all subsequent sequences.
 	return nsh_runcmd(args, 0);
 }
 
