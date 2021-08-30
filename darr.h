@@ -2,7 +2,7 @@
  * Written by Sean M Fitzgerald
  * sean_m_fitzgerald@tutanota.com
  *
- * Based on example implementation from
+ * Dynamic Array based on example implementation from
  * Learn C the Hard Way by Zed Shaw
  */
 

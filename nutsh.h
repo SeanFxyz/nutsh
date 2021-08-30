@@ -54,7 +54,6 @@ char **nsh_tokenize(char *line)
 {
 	darr *tokens = darr_create(sizeof(char*), 64);
 	char **tokens_p;
-	int i;
 	size_t tok_len;
 	char *token;
 	char *tok_copy;
