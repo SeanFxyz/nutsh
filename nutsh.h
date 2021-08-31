@@ -22,7 +22,7 @@
 
 // Reads a line of text from standard input, returning
 // a pointer to the resulting string.
-// TODO: Make more efficient.
+// TODO: Make more efficient. One character at a time is slow. Maybe use scanf?
 char *nsh_readline()
 {
     int bufsize = NSH_READLINE_BUFSIZE; // Default buffer size
@@ -30,11 +30,8 @@ char *nsh_readline()
     int c;                              // For storing the next character value
     char *buffer = malloc(sizeof(char) * bufsize); // Allocate buffer
 
-    // TODO: use mem_check macro
-    if (!buffer) {
-        fprintf(stderr, "nsh: allocation error\n");
-        exit(1);
-    }
+    // Check allocation (check_mem macro defined in dbg.h)
+    check_mem(buffer);
 
     // Read characters into buffer.
     while ((c = getchar()) != '\n' && c != EOF) {
@@ -53,11 +50,8 @@ char *nsh_readline()
             //  but hopefully resizing won't happen too often.
             buffer = realloc(buffer, bufsize);
 
-            // TODO: use mem_check macro
-            if (!buffer) {
-                fprintf(stderr, "nsh: allocation error\n");
-                exit(1);
-            }
+            // Check reallocation
+            check_mem(buffer);
         }
     }
 
