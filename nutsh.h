@@ -146,39 +146,75 @@ char **nsh_tokenize(char *line)
     return tokens_p;
 }
 
-// nsh_pipesplit works sort of like strtok. It will return a pointer within
-// the same array of strings, indicating the start of the next sequence, as
-// well as setting the pipe token (a char*) at the end of the sequence to
-// NULL, which is used as a sentinel by nsh_runcmd
+// nsh_pipesplit works sort of like strtok, but rather than strings, it works
+// on arrays of strings. It will return a pointer within the same array of
+// strings, indicating the start of the next sequence, as well as setting the
+// pipe token (a char*) at the end of the sequence to NULL, which is used as a
+// sentinel by nsh_runcmd
 
 // pointer to the next sequence in the most recently split token list
 // This is what nsh_pipesplit will return if it is passed NULL for its argument
-// If it is passwd a non-NULL pointer
+// If nsh_pipesplit is passed a non-NULL pointer, nsh_pipesplit_i will be set
+// to point to the sequence after the first pipe
 static char **nsh_pipesplit_i = NULL;
 char **nsh_pipesplit(char **tokens)
 {
-    int i;
-    char **tok;
+    int i;      // index for the for-loop below
+    char **tok; // the pointer we will return, unless we are at the end of the
+                // tokens and return NULL
 
     if (tokens != NULL) {
+        // If we are given a new array of tokens to split:
+
+        // Reset nsh_pipesplit_i to NULL (it will be later set to the start of
+        // the next sequence, after the first pipe
         nsh_pipesplit_i = NULL;
+
+        // Set the return value to the beginning of the new array.
         tok = tokens;
+
     } else if (nsh_pipesplit_i != NULL) {
+        // If we don't have a new array to process, AND nsh_pipesplit_i is set
+        // from working on a previous array:
+
+        // Set return value to nsh_pipesplit_i, which should point to the next
+        // pipe-delimited sequence of tokens.
         tok = nsh_pipesplit_i;
+
     } else {
+        // If none of the above, we've either reached the end of the current
+        // token sequence or weren't working on one to begin with, so return
+        // NULL
         return NULL;
     }
 
+    // Now it's time to adjust the nsh_pipesplit_i pointer to point to the
+    // token at the start of the next pipe-delimited sequence.
+
+    // Initialize i
     i = 0;
+
+    // Yes, this is a for-loop with no body. This causes i to be incremented
+    // until tok[i] is either NULL or a string equivalent to "|", a pipe token
     for (i = 0;	tok[i] != NULL && strcmp(tok[i], "|") != 0;	i++);
+
     if (tok[i]) {
+        // tok[i] is not NULL, which because of the for-loop above means it
+        // must point to a string equivalent to "|"
+
+        // Free this string and set the pointer at tok[i] to NULL
         free(tok[i]);
         tok[i] = NULL;
+
+        // Set nsh_pipesplit_i to the start of the next sequence, one byte
+        // past the discovered pipe token
         nsh_pipesplit_i = &tok[i+1];
     } else {
+        // tok[i] is NULL, so we've reached the end of this token sequence.
         nsh_pipesplit_i = NULL;
     }
 
+    // Return the pointer
     return tok;
 }
 
