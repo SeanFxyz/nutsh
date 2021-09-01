@@ -220,43 +220,68 @@ char **nsh_pipesplit(char **tokens)
 
 int nsh_runcmd(char **args, int infd)
 {
-    int status;
-    pid_t pid;
-    pid_t wpid;
-    int pipefd[2];
-    int outfd = STDOUT_FILENO;
-    char **next_args = nsh_pipesplit(NULL);
-    char (*builtin_func)(char **);
+    int status;    // status to return to the main loop
+    pid_t pid;     // stores process id of forked process
+    int pipefd[2]; // stores the file descriptors for the two ends of a pipe
+    int outfd = STDOUT_FILENO;     // the file descriptor to use for output,
+                                   //   defaulted to standard output
+    char (*builtin_func)(char **); // function pointer to reference builtins
 
+    // Grab the next pipe-delimited sequence and store in next_args
+    char **next_args = nsh_pipesplit(NULL);
+
+    // If we actually have another pipe-delimited sequence, we want to pipe
+    // the output of this command into the output of the next one, so we will
+    // create a pipe and pass its input file descriptor for infd when we
+    // recurse.
     if (next_args) {
-        // we will pipe into the next command
+        // Create pipe and store its input and output file descriptors in
+        // the pipefd array
         if (pipe(pipefd) < 0) {
+            // Error out if the pipe wasn't created successfully.
             perror("nsh");
             exit(errno);
         }
+
+        // Change the output file descriptor used for the current command
+        // to the pipe's input
         outfd = pipefd[1];
     }
 
+    // Look for a builtin command matching the tokens we've been given.
+    // (This sets builtin_func to the appropriate function's address)
+    // TODO: Instead of returning, let the builtin command work with pipes.
     builtin_func = nsh_get_builtin(args);
     if (builtin_func) {
+        // If nsh_get_builtin gave us a non-NULL function pointer, call the
+        // function at the address with args as the argument.
         return (*builtin_func)(args);
     }
 
+    // Fork the current process, storing the process ID of the child process.
     pid = fork();
     if (pid < 0) {
+        // If the pid is negative, fork was unsuccessful
         perror("nsh");
         exit(errno);
     }
 
     if (pid == 0) {
-        // child process
-        // read from infd
+        // If our PID is zero, we are the child process
+
+        // If this command is being piped into, we want to get our input from
+        // the previous process so duplicate the provided input file descriptor
+        // (infd) to STDIN_FILENO, overwriting the standard input file
+        // descriptor.
         dup2(infd, STDIN_FILENO);
 
-        // if we made another pipe
         if (outfd != 1) {
-            // close read end
+            // If our outfd isn't equal to the default standard output file
+            // descriptor:
+
+            // close the read end
             close(pipefd[0]);
+
             // set up to write to new pipe
             dup2(pipefd[1], STDOUT_FILENO);
         }
@@ -278,7 +303,7 @@ int nsh_runcmd(char **args, int infd)
         }
 
         do {
-            wpid = waitpid(pid, &status, WUNTRACED);
+            waitpid(pid, &status, WUNTRACED);
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
         return 1;
