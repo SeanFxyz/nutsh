@@ -45,3 +45,18 @@ The Nut Job.mp4
 The Nutty Professor.mp4
 🥜$
 ```
+You should be able to chain as many commands as you like this way:
+```
+🥜$ ls Movies/ | grep -i nut | cowsay -n
+ _________________________
+/ Nutcracker.mp4          \
+| The Nut Job.mp4         |
+\ The Nutty Professor.mp4 /
+ -------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+🥜$
+```
