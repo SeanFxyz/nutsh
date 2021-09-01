@@ -37,7 +37,7 @@ At present, nutsh will run any program in your `$PATH` as well as four builtin c
 
 Pipes from one program to another are supported, but are not compatible with builtin commands.
 
-To pipe from one program to another, type a command that outputs to stdout, like `ls`, then a pipe `|` character with **with spaces on either side**, then another command that read from stdin, like grep, all on the same line, like this:
+To pipe from one program to another, type a command that outputs to stdout, like `ls`, then a pipe `|` character with **with spaces on either side**, then another command that reads from stdin, like grep, all on the same line, like this:
 ```
 🥜$ ls Movies/ | grep -i nut
 Nutcracker.mp4
