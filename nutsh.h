@@ -279,13 +279,21 @@ int nsh_runcmd(char **args, int infd)
             // If our outfd isn't equal to the default standard output file
             // descriptor:
 
-            // close the read end
+            // Close read end of new pipe, since we won't be reading from it
             close(pipefd[0]);
 
-            // set up to write to new pipe
+            // Set up to write to the new pipe by duplicating the pipe's input
+            // file descriptor to STDOUT_FILENO, overwriting the stdout file
+            // descriptor.
             dup2(pipefd[1], STDOUT_FILENO);
         }
 
+        // Replace the current process with the program to be run.
+        // execvp takes our first arg as the command, and the whole array
+        // of args as the process's argument list.
+        //   For context, if the program we are running is a C program,
+        //   the 'args' array we are giving it will become the 'argv' array,
+        //   passed to its main function.
         if (execvp(args[0], args) < 0) {
             perror("nsh");
             exit(errno);
@@ -294,15 +302,28 @@ int nsh_runcmd(char **args, int infd)
         exit(0);
 
     } else {
-        // parent process
+        // If pid is greater than zero, we are the parent process.
+
         if (next_args != NULL && outfd != STDOUT_FILENO) {
-            // close write end of pipe
+            // If the next_args pointer is pointing to another sequence of
+            // tokens, AND we were intending to send our output somewhere other
+            // than stdout:
+
+            // close write end of pipe, since our child
+            // process will be doing the writing
             close(pipefd[1]);
-            // pipe to next command in pipeline
+
+            // Recursively call to run next_args, with our pipe's output end
+            // as the input file descriptor for this next command.
             return nsh_runcmd(next_args, pipefd[0]);
         }
 
+        // If we didn't recursively call, we should just wait for our child
+        // process to exit.
         do {
+            // Wait for the process with process ID 'pid' to finish.
+            // Giving a pointer to our 'status' variable tells waitpid that it
+            // can put the process's status there.
             waitpid(pid, &status, WUNTRACED);
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
