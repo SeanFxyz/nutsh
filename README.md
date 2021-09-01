@@ -26,10 +26,22 @@ If you don't have root privileges, you can also copy the binary to `~/.local/bin
 
 ## Features
 
-* At present, nutsh will run any program in your `$PATH` as well as four builtin commands:
-    * help: displays builtin commands
-    * cd: changes the current directory
-    * pwd: prints the current directory
-    * exit: terminates the shell
+### Commands
+At present, nutsh will run any program in your `$PATH` as well as four builtin commands:
+* help: displays builtin commands
+* cd: changes the current directory
+* pwd: prints the current directory
+* exit: terminates the shell
 
-* Pipes from one program to another are supported, but are not compatible with builtin commands.
+### Pipes
+
+Pipes from one program to another are supported, but are not compatible with builtin commands.
+
+To pipe from one program to another, type a command that outputs to stdout, like `ls`, then a pipe `|` character with **with spaces on either side**, then another command that read from stdin, like grep, all on the same line, like this:
+```
+🥜$ ls Movies/ | grep -i nut
+Nutcracker.mp4
+The Nut Job.mp4
+The Nutty Professor.mp4
+🥜$
+```
