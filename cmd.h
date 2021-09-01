@@ -8,6 +8,9 @@
 
 #include <stdio.h>
 
+// Declaring functions which correspond to builtin commands.
+// Each takes an array of strings as an argument and returns a char value
+// indicating status.
 char cmd_cd(char **args);
 char cmd_pwd(char **args);
 char cmd_help(char **args);
