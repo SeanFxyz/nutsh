@@ -26,10 +26,10 @@ If you don't have root privileges, you can also copy the binary to `~/.local/bin
 
 ## Features
 
-At present, nutsh will run any program in your `$PATH` as well as four builtin commands:
-* help: displays builtin commands
-* cd: changes the current directory
-* pwd: prints the current directory
-* exit: terminates the shell
+* At present, nutsh will run any program in your `$PATH` as well as four builtin commands:
+    * help: displays builtin commands
+    * cd: changes the current directory
+    * pwd: prints the current directory
+    * exit: terminates the shell
 
-Pipes from one program to another are also supported, but are not compatible with builtin commands.
+* Pipes from one program to another are supported, but are not compatible with builtin commands.
