@@ -8,7 +8,16 @@ Written by Sean M Fitzgerald
 sean_m_fitzgerald@tutanota.com
 
 ## Compiling
-After acquiring the source code, enter the source code directory and simply run the `make` command.
+You can get the code by downloading a zip file from the GitHub page or by cloning the repository:
+```
+$ git clone git@github.com:SeanFxyz/nutsh.git
+```
+
+After acquiring the source code, enter the source code directory and simply run the `make` command:
+```
+$ cd nutsh
+$ make
+```
 
 ## Installing
 Run `make install` with root privileges to copy the `nutsh` binary to /usr/bin/
