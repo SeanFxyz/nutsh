@@ -20,7 +20,9 @@ $ make
 ```
 
 ## Installing
-Run `make install` with root privileges to copy the `nutsh` binary to /usr/bin/
+You can install nutsh to your system by running `make install` with root privileges to copy the `nutsh` binary to `/usr/bin/`
+
+If you don't have root privileges, you can also copy the binary to `~/.local/bin/`, which is likely to be in your path.
 
 ## Features
 
