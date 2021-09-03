@@ -267,7 +267,7 @@ int nsh_runcmd(char **args, int infd)
     }
 
     if (pid == 0) {
-        // If our PID is zero, we are the child process
+        // If our return from fork() is zero, we are the child process
 
         // If this command is being piped into, we want to get our input from
         // the previous process so duplicate the provided input file descriptor
@@ -302,7 +302,8 @@ int nsh_runcmd(char **args, int infd)
         exit(0);
 
     } else {
-        // If pid is greater than zero, we are the parent process.
+        // If the return from fork() is greater than zero, we are the parent
+        // process, fork() gave us the PID of our new child.
 
         if (next_args != NULL && outfd != STDOUT_FILENO) {
             // If the next_args pointer is pointing to another sequence of
