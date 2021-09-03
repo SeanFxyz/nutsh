@@ -18,6 +18,7 @@ After acquiring the source code, enter the source code directory and simply run 
 $ cd nutsh
 $ make
 ```
+You can also run `make debug` to compile a version with debug symbols enabled for use with `gdb` or similar debugging tools.
 
 ## Installing
 You can install nutsh to your system by running `make install` with root privileges to copy the `nutsh` binary to `/usr/bin/`
