@@ -7,6 +7,9 @@ Written by Sean M Fitzgerald
 
 sean_m_fitzgerald@tutanota.com
 
+## Prerequisites
+You must have a C compiler accessible via the `cc` command, and the POSIX standard libraries.
+
 ## Compiling
 You can get the code by downloading a zip file from the GitHub page or by cloning the repository:
 ```
