@@ -8,7 +8,17 @@ Written by Sean M Fitzgerald
 sean_m_fitzgerald@tutanota.com
 
 ## Prerequisites
-You must have a C compiler accessible via the `cc` command, and the POSIX standard libraries.
+You must have a POSIX/Unix-like environment with a C compiler accessible via the `cc` command, and the POSIX standard libraries.
+
+On Linux, BSD, you probably have these already. If not, look up how to install the basic development tools on your distribution.
+
+On MacOS, you could install the official Apple Developer Tools package, but I would prefer to install
+[Homebrew](https://brew.sh/)
+and use it to install the `gcc` and `make` packages.
+
+If you'd like to try this out on Windows, I recommend
+[Cygwin](https://www.cygwin.com/).
+Be sure to install Cygwin's `gcc-core` and `make` packages during setup.
 
 ## Compiling
 You can get the code by downloading a zip file from the GitHub page or by cloning the repository:
