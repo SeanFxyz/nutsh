@@ -14,7 +14,7 @@ On Linux, BSD, you probably have these already. If not, look up how to install t
 
 On MacOS, you could install the official Apple Developer Tools package, but I would prefer to install
 [Homebrew](https://brew.sh/)
-and use it to install the `gcc` and `make` packages.
+and then run `brew install gcc make` from the terminal to install the `gcc` and `make` packages.
 
 If you'd like to try this out on Windows, I recommend
 [Cygwin](https://www.cygwin.com/).
