@@ -51,6 +51,6 @@ int main(int argc, char* argv[])
 
     } while (status); // End loop if status is not 0
 
-    // Exit normally
-    return 0;
+    // Exit sucessfully
+    return EXIT_SUCCESS;
 }
