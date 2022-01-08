@@ -10,7 +10,7 @@ sean_m_fitzgerald@tutanota.com
 ## Prerequisites
 You must have a POSIX/Unix-like environment with a C compiler accessible via the `cc` command, and the POSIX standard libraries.
 
-On Linux, BSD, you probably have these already. If not, look up how to install the basic development tools on your distribution.
+On Linux, \*BSD, and similar systems you likely have these already. If not, look up how to install the basic development tools on your distribution.
 
 On MacOS, you could install the official Apple Developer Tools package, but I would prefer to install
 [Homebrew](https://brew.sh/)
