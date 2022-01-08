@@ -196,7 +196,7 @@ char **nsh_pipesplit(char **tokens)
 
     // Yes, this is a for-loop with no body. This causes i to be incremented
     // until tok[i] is either NULL or a string equivalent to "|", a pipe token
-    for (i = 0;	tok[i] != NULL && strcmp(tok[i], "|") != 0;	i++);
+    for (i = 0;	tok[i] != NULL && strcmp(tok[i], "|") != 0; i++);
 
     if (tok[i]) {
         // tok[i] is not NULL, which because of the for-loop above means it
