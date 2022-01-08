@@ -159,7 +159,7 @@ char **nsh_tokenize(char *line)
 static char **nsh_pipesplit_i = NULL;
 char **nsh_pipesplit(char **tokens)
 {
-    int i;      // index for the for-loop below
+    int i;      // index for locating the next null or '|' character
     char **tok; // the pointer we will return, unless we are at the end of the
                 // tokens and return NULL
 
@@ -190,9 +190,6 @@ char **nsh_pipesplit(char **tokens)
 
     // Now it's time to adjust the nsh_pipesplit_i pointer to point to the
     // token at the start of the next pipe-delimited sequence.
-
-    // Initialize i
-    i = 0;
 
     // Yes, this is a for-loop with no body. This causes i to be incremented
     // until tok[i] is either NULL or a string equivalent to "|", a pipe token
